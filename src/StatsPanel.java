@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Displays statistics about how many guesses the person took during past games
  * Loads data from the file and displays in a JPanel
  *
- * TODO: refactor this class
+ * TODO: refactor this class / Dne
  */
 public class StatsPanel extends JPanel {
 
@@ -21,13 +21,8 @@ public class StatsPanel extends JPanel {
 
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
-        JLabel title = new JLabel("Your Stats");
-        this.add(title);
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel subtitle = new JLabel("(Past 30 Days)");
-        this.add(subtitle);
-        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        addLabel("Your Stats");
+        addLabel("(Past 30 Days)");
 
         this.add(Box.createRigidArea(new Dimension(0,40)));
 
@@ -36,6 +31,38 @@ public class StatsPanel extends JPanel {
         resultsPanel.setLayout(new GridLayout(0, 2));
         resultsPanel.add(new JLabel("Guesses"));
         resultsPanel.add(new JLabel("Games"));
+        setBinEdges();
+
+        resultsPanel.setMinimumSize(new Dimension(120, 120));
+        this.add(resultsPanel);
+        resultsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        updateResultsPanel();
+
+        this.add(Box.createVerticalGlue());
+
+        addButton("Back to Home", () -> {
+            // See itemStateChanged in https://docs.oracle.com/javase/tutorial/uiswing/examples/layout/CardLayoutDemoProject/src/layout/CardLayoutDemo.java
+            CardLayout cardLayout = (CardLayout) cardsPanel.getLayout();
+            cardLayout.show(cardsPanel, ScreenID.HOME.name());
+        });
+
+        this.add(Box.createRigidArea(new Dimension(0,20)));
+
+        this.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                updateResultsPanel();
+            }
+        });
+    }
+
+    private void addButton(String title, Runnable action) {
+        JButton quit = new JButton(title);
+        quit.addActionListener(e -> action.run());
+        this.add(quit);
+        quit.setAlignmentX(Component.CENTER_ALIGNMENT);
+    }
+
+    private void setBinEdges() {
         for(int binIndex=0; binIndex<BIN_EDGES.length; binIndex++){
             String binName;
             if(binIndex == BIN_EDGES.length-1){
@@ -57,32 +84,13 @@ public class StatsPanel extends JPanel {
             resultsLabels.add(result);
             resultsPanel.add(result);
         }
-
-        resultsPanel.setMinimumSize(new Dimension(120, 120));
-        this.add(resultsPanel);
-        resultsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        updateResultsPanel();
-
-        this.add(Box.createVerticalGlue());
-
-        JButton quit = new JButton("Back to Home");
-        quit.addActionListener(e -> {
-            // See itemStateChanged in https://docs.oracle.com/javase/tutorial/uiswing/examples/layout/CardLayoutDemoProject/src/layout/CardLayoutDemo.java
-            CardLayout cardLayout = (CardLayout) cardsPanel.getLayout();
-            cardLayout.show(cardsPanel, ScreenID.HOME.name());
-        });
-        this.add(quit);
-        quit.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        this.add(Box.createRigidArea(new Dimension(0,20)));
-
-        this.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent e) {
-                updateResultsPanel();
-            }
-        });
     }
 
+    private void addLabel(String title) {
+        JLabel label = new JLabel(title);
+        this.add(label);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+    }
 
     private void clearResults(){
         for(JLabel lbl : resultsLabels){

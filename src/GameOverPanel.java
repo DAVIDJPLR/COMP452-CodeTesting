@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * Displays the game outcome
  * Writes the results to file (if human was guessing)
  *
- * TODO: Refactor the setGameResults method. Leave the rest of this file unchanged.
+ * TODO: Refactor the setGameResults method. Leave the rest of this file unchanged. / Done
  */
 public class GameOverPanel extends JPanel {
 
@@ -66,7 +66,7 @@ public class GameOverPanel extends JPanel {
     }
 
     /**
-     * Sets the game results, updates the UI, and saves results to the log file (if human was playing)
+     * Sets the game results, updates the UI, and calls saveResults (if human was playing)
      */
     // TODO: refactor this method
     public void setGameResults(GameResult result){
@@ -80,19 +80,27 @@ public class GameOverPanel extends JPanel {
             numGuessesTxt.setText("It took " + (result.humanWasPlaying ? "you" : "me") + " " + result.numGuesses + " guesses.");
         }
 
-        if(result.humanWasPlaying){
-            // write stats to file
-            try(CSVWriter writer = new CSVWriter(new FileWriter(StatsFile.FILENAME, true))) {
+        if (result.humanWasPlaying) {
+            saveResults(result);
+        }
+    }
 
-                String [] record = new String[2];
-                record[0] = LocalDateTime.now().toString();
-                record[1] = Integer.toString(result.numGuesses);
+    /**
+     * Saves results to the log file
+     * @param result
+     */
+    private void saveResults(GameResult result) {
+        // write stats to file
+        try(CSVWriter writer = new CSVWriter(new FileWriter(StatsFile.FILENAME, true))) {
 
-                writer.writeNext(record);
-            } catch (IOException e) {
-                // NOTE: In a full implementation, we would log this error and possibly alert the user
-                // NOTE: For this project, you do not need unit tests for handling this exception.
-            }
+            String [] record = new String[2];
+            record[0] = LocalDateTime.now().toString();
+            record[1] = Integer.toString(result.numGuesses);
+
+            writer.writeNext(record);
+        } catch (IOException e) {
+            // NOTE: In a full implementation, we would log this error and possibly alert the user
+            // NOTE: For this project, you do not need unit tests for handling this exception.
         }
     }
 }
