@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Displays statistics about how many guesses the person took during past games
  * Loads data from the file and displays in a JPanel
  *
- * TODO: refactor this class / Dne
+ * TODO: refactor this class
  */
 public class StatsPanel extends JPanel {
 

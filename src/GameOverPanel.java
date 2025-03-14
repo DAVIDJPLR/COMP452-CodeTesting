@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * Displays the game outcome
  * Writes the results to file (if human was guessing)
  *
- * TODO: Refactor the setGameResults method. Leave the rest of this file unchanged. / Done
+ * TODO: Refactor the setGameResults method. Leave the rest of this file unchanged. Done
  */
 public class GameOverPanel extends JPanel {
 
@@ -69,19 +69,23 @@ public class GameOverPanel extends JPanel {
      * Sets the game results, updates the UI, and calls saveResults (if human was playing)
      */
     // TODO: refactor this method
-    public void setGameResults(GameResult result){
+    public void setGameResults(GameResult result, JLabel answer, JLabel numGuesses){
         this.gameResult = result;
 
-        answerTxt.setText("The answer was " + result.correctValue + ".");
+        setTexts(result, answer, numGuesses);
+    }
+
+    public void setGameResults(GameResult result){
+        setGameResults(result, answerTxt, numGuessesTxt);
+    }
+
+    public static void setTexts(GameResult result, JLabel answer, JLabel numGuesses){
+        answer.setText("The answer was " + result.correctValue + ".");
         if(result.numGuesses == 1){
-            numGuessesTxt.setText((result.humanWasPlaying ? "You" : "I") + " guessed it on the first try!");
+            numGuesses.setText((result.humanWasPlaying ? "You" : "I") + " guessed it on the first try!");
         }
         else {
-            numGuessesTxt.setText("It took " + (result.humanWasPlaying ? "you" : "me") + " " + result.numGuesses + " guesses.");
-        }
-
-        if (result.humanWasPlaying) {
-            saveResults(result);
+            numGuesses.setText("It took " + (result.humanWasPlaying ? "you" : "me") + " " + result.numGuesses + " guesses.");
         }
     }
 
@@ -89,18 +93,20 @@ public class GameOverPanel extends JPanel {
      * Saves results to the log file
      * @param result
      */
-    private void saveResults(GameResult result) {
-        // write stats to file
-        try(CSVWriter writer = new CSVWriter(new FileWriter(StatsFile.FILENAME, true))) {
+    public void saveResults(GameResult result) {
+        if (result.humanWasPlaying) {
+            // write stats to file
+            try(CSVWriter writer = new CSVWriter(new FileWriter(StatsFile.FILENAME, true))) {
 
-            String [] record = new String[2];
-            record[0] = LocalDateTime.now().toString();
-            record[1] = Integer.toString(result.numGuesses);
+                String [] record = new String[2];
+                record[0] = LocalDateTime.now().toString();
+                record[1] = Integer.toString(result.numGuesses);
 
-            writer.writeNext(record);
-        } catch (IOException e) {
-            // NOTE: In a full implementation, we would log this error and possibly alert the user
-            // NOTE: For this project, you do not need unit tests for handling this exception.
+                writer.writeNext(record);
+            } catch (IOException e) {
+                // NOTE: In a full implementation, we would log this error and possibly alert the user
+                // NOTE: For this project, you do not need unit tests for handling this exception.
+            }
         }
     }
 }
