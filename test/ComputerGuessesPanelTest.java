@@ -19,7 +19,7 @@ public class ComputerGuessesPanelTest {
     @Test
     void incNumGuesses(){
         ComputerGuessesPanel computerPanel = new ComputerGuessesPanel();
-        computerPanel.makeGuess();
+        computerPanel.incNumGuesses();
         assertEquals(1, computerPanel.getNumGuesses());
     }
 
@@ -28,7 +28,7 @@ public class ComputerGuessesPanelTest {
         ComputerGuessesPanel computerPanel = new ComputerGuessesPanel();
         String guessString = computerPanel.makeGuess();
 
-        assertEquals("I guess 500.", guessString);
+        assertEquals("I guess " + computerPanel.getLastGuess() +".", guessString);
     }
 
     @Test
