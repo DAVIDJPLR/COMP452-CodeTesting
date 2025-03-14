@@ -13,8 +13,12 @@ public class HumanGuessesGame {
     private int numGuesses;
     private boolean gameIsDone; // true iff makeGuess has been called with the target value
 
-    HumanGuessesGame(){
-        Random randGen = new Random();
+    public HumanGuessesGame(){
+        this(new Random());
+    }
+
+    public HumanGuessesGame(Random randGen){
+
         this.target = randGen.nextInt(UPPER_BOUND) + 1;
 
         numGuesses = 0;
@@ -34,11 +38,11 @@ public class HumanGuessesGame {
         return GuessResult.CORRECT;
     }
 
-    int getNumGuesses(){
+    public int getNumGuesses(){
         return numGuesses;
     }
 
-    boolean isDone(){
+    public boolean isDone(){
         return gameIsDone;
     }
 }
